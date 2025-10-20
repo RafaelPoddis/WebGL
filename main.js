@@ -11,22 +11,50 @@ function main()
         return;
     }
 
+    
+    
+    const vShaderSource = `
+    attribute vec4 aVertexPosition;
+    
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    
+    void main() {
+    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+    }`;
+    
+    const fShaderSource = `
+    void main() {
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }`;
+
+    vShader = createShader(gl, gl.VERTEX_SHADER, vShaderSource);
+    fShader = createShader(gl, gl.FRAGMENT_SHADER, fShaderSource);
+    
+    const program = gl.createProgram();
+
+    gl.attachShader(program, vShader);
+    gl.attachShader(program, fShader);
+
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
     gl.clearColor(255, 255, 255, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
+    // Retenagulo
+    var translation = [0, 0];
+    var width = 100;
+    var height = 30;
+    var color = [Math.random(), Math.random(), Math.random(), 1];
+}
 
-    const vShader = `
-        attribute vec4 aVertexPosition;
+function createShader(gl, type, source)
+{
+    const shader = gl.createShader(type);
 
-        uniform mat4 uModelViewMatrix;
-        uniform mat4 uProjectionMatrix;
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
 
-        void main() {
-        gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-        }`;
-
-    const fShader = `
-        void main() {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        }`;
+    return shader;
 }
